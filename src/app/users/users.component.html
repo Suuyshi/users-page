@@ -1,0 +1,64 @@
+<section class="users-container">
+  <mat-toolbar color="primary" class="users-container__title">
+    <span>Users list</span>
+  </mat-toolbar>
+  <mat-spinner
+    *ngIf="isLoading"
+    diameter="100"
+    color="ThemePalette"
+  ></mat-spinner>
+  <app-header (search)="handleSearch($event)"></app-header>
+  <div class="users-list-container">
+    <ng-container *ngIf="searchResult && !isLoading">
+      <mat-card
+        class="user-card"
+        *ngIf="searchResult"
+        (click)="navigateToUserDetails(searchResult)"
+      >
+        <mat-card-header>
+          <div
+            mat-card-avatar
+            class="user-avatar"
+            [style.background-image]="'url(' + searchResult.avatar + ')'"
+          ></div>
+          <mat-card-title
+            >{{ searchResult.first_name }}
+            {{ searchResult.last_name }}</mat-card-title
+          >
+          <mat-card-subtitle>ID: {{ searchResult.id }}</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </ng-container>
+  </div>
+  <div class="users-list-container">
+    <ng-container
+      *ngIf="!searchResult && !isLoading"
+      class="users-list-container"
+    >
+      <mat-card
+        class="user-card"
+        *ngFor="let user of userList"
+        (click)="navigateToUserDetails(user)"
+      >
+        <mat-card-header>
+          <div
+            mat-card-avatar
+            class="user-avatar"
+            [style.background-image]="'url(' + user.avatar + ')'"
+          ></div>
+          <mat-card-title
+            >{{ user.first_name }} {{ user.last_name }}</mat-card-title
+          >
+          <mat-card-subtitle>ID: {{ user.id }}</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </ng-container>
+  </div>
+
+  <mat-paginator
+    [pageSize]="pageSize"
+    [length]="totalUsers"
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
+</section>
