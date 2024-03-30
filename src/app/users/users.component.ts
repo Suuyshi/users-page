@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserCacheService } from './users-cache.service';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, AfterViewInit {
   userList: any[] = [];
   pageSize: number = 6;
   currentPage: number = 1;
   totalUsers: number = 0;
   isLoading: boolean = true;
   searchResult: any | null = null;
+
+  @ViewChild('paginator') paginator!: MatPaginator;
 
   constructor(
     private http: HttpClient,
@@ -26,9 +29,12 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params: any) => {
       this.currentPage = +params['page'] || 1;
-      console.log('this', this.currentPage);
       this.fetchUsers(this.currentPage);
     });
+  }
+
+  ngAfterViewInit() {
+    this.paginator.pageIndex = this.currentPage - 1;
   }
 
   fetchUsers(page: number): void {
